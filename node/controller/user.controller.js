@@ -41,4 +41,49 @@ export const createUser=(req,res)=>{
 
 
 
+export const updateUsers = (req, res) => {
+    const { name, email, phone, password, hobby, address } = req.body;
+    const id = parseInt(req.params.id); // Parse the ID from the URL params
+    const sql = "UPDATE user SET name=?, email=?, phone=?, password=?, hobby=?, address=? WHERE user_id=?";
+    const values = [name, email, phone, password, hobby, address, id]; // Include id at the end
+
+    db.query(sql, values, (err, result) => {
+        if (err) {
+            res.status(500).send({ statusCode: 500, message: "Something went wrong", error: err });
+        } else {
+            res.status(200).send({ statusCode: 200, message: "User updated successfully", result });
+        }
+    });
+};
+
+
+export const deleteUser = (req,res) =>{
+    const id = parseInt(req.params.id);
+    const sql = "delete from user where user_id=?";
+    db.query(sql, [id], (err,result)=>{
+        if(err){
+            res.send({statusCode:300, message:"something went wrong"})
+        }else{
+            res.send(result);
+        }
+    });
+};
+
+
+export const getAllUsers = (req,res) =>{
+    const sql="select * from user";
+    db.query(sql,(err,data)=>{
+        if(err){
+            res.send({statusCode:300, message:"Something gone wrong"})
+        }else{
+            if(data.length===0){
+                res.send({statusCode:300, message: "User is not available"})
+            }else{
+                res.send(data);
+            }
+        }
+    });
+};
+
+
 // update, delete, select * from users
